@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Dummy;
+using Greet;
 using Grpc.Core;
 
 namespace client
@@ -19,7 +20,13 @@ namespace client
                     Console.WriteLine("The client connected successfully");
             });
 
-            var client = new DummyService.DummyServiceClient(channel);
+            //var client = new DummyService.DummyServiceClient(channel);
+
+            var client = new GreetingService.GreetingServiceClient(channel);
+            var greeting = new Greeting() { FirstName = "Önder", LastName = "Genç" };
+            var request = new GreetingRequest() { Greeting = greeting };
+            var response = client.Greet(request);
+            Console.WriteLine(response.Result);
 
             channel.ShutdownAsync().Wait();
             Console.ReadKey();
