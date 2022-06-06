@@ -47,6 +47,8 @@ namespace client
             Console.WriteLine("The sum of {0} and {1} is {2}", request.A, request.B, response.Result);
             */
 
+            /*
+             * Server streaming Greeting 
             var client = new GreetingService.GreetingServiceClient(channel);
             var greeting = new Greeting() { FirstName = "Önder", LastName = "Genç" };
             var request = new GreetManyTimesRequest() { Greeting = greeting };
@@ -56,7 +58,22 @@ namespace client
                 Console.WriteLine(response.ResponseStream.Current.Result);
                 await Task.Delay(200);
             }            
-            
+            */
+
+            var client = new CalculatorService.CalculatorServiceClient(channel);
+
+            var request = new PrimeNumberDecompositionRequest()
+            {
+                Number = 120
+            };
+
+            var response = client.PrimeNumberDecomposition(request);
+
+            while (await response.ResponseStream.MoveNext())
+            {
+                Console.WriteLine(response.ResponseStream.Current.Result);
+                await Task.Delay(200);
+            }
             channel.ShutdownAsync().Wait();
             Console.ReadKey();
         }

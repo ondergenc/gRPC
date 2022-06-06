@@ -17,5 +17,25 @@ namespace server
 
             return Task.FromResult(new CalculatorSumResponse() { Result = result });
         }
+
+        public override async Task PrimeNumberDecomposition(PrimeNumberDecompositionRequest request, IServerStreamWriter<PrimeNumberDecompositionResponse> responseStream, ServerCallContext context)
+        {
+            Console.WriteLine("The server received the request :");
+            Console.WriteLine(request.ToString());
+
+            int number = request.Number;
+            int divisor = 2;
+
+            while (number > 1)
+            {
+                if (number % divisor == 0)
+                {
+                    number /= divisor;
+                    await responseStream.WriteAsync(new PrimeNumberDecompositionResponse() { Result = divisor });
+                }
+                else
+                    divisor++;
+            }
+        }
     }
 }

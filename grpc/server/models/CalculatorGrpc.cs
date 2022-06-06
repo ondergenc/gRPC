@@ -49,6 +49,10 @@ namespace Calculator {
     static readonly grpc::Marshaller<global::Calculator.CalculatorSumRequest> __Marshaller_calculator_CalculatorSumRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Calculator.CalculatorSumRequest.Parser));
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
     static readonly grpc::Marshaller<global::Calculator.CalculatorSumResponse> __Marshaller_calculator_CalculatorSumResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Calculator.CalculatorSumResponse.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Calculator.PrimeNumberDecompositionRequest> __Marshaller_calculator_PrimeNumberDecompositionRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Calculator.PrimeNumberDecompositionRequest.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Calculator.PrimeNumberDecompositionResponse> __Marshaller_calculator_PrimeNumberDecompositionResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Calculator.PrimeNumberDecompositionResponse.Parser));
 
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
     static readonly grpc::Method<global::Calculator.CalculatorSumRequest, global::Calculator.CalculatorSumResponse> __Method_Calculator = new grpc::Method<global::Calculator.CalculatorSumRequest, global::Calculator.CalculatorSumResponse>(
@@ -57,6 +61,14 @@ namespace Calculator {
         "Calculator",
         __Marshaller_calculator_CalculatorSumRequest,
         __Marshaller_calculator_CalculatorSumResponse);
+
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Method<global::Calculator.PrimeNumberDecompositionRequest, global::Calculator.PrimeNumberDecompositionResponse> __Method_PrimeNumberDecomposition = new grpc::Method<global::Calculator.PrimeNumberDecompositionRequest, global::Calculator.PrimeNumberDecompositionResponse>(
+        grpc::MethodType.ServerStreaming,
+        __ServiceName,
+        "PrimeNumberDecomposition",
+        __Marshaller_calculator_PrimeNumberDecompositionRequest,
+        __Marshaller_calculator_PrimeNumberDecompositionResponse);
 
     /// <summary>Service descriptor</summary>
     public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
@@ -70,6 +82,12 @@ namespace Calculator {
     {
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
       public virtual global::System.Threading.Tasks.Task<global::Calculator.CalculatorSumResponse> Calculator(global::Calculator.CalculatorSumRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::System.Threading.Tasks.Task PrimeNumberDecomposition(global::Calculator.PrimeNumberDecompositionRequest request, grpc::IServerStreamWriter<global::Calculator.PrimeNumberDecompositionResponse> responseStream, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
@@ -123,6 +141,16 @@ namespace Calculator {
       {
         return CallInvoker.AsyncUnaryCall(__Method_Calculator, null, options, request);
       }
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncServerStreamingCall<global::Calculator.PrimeNumberDecompositionResponse> PrimeNumberDecomposition(global::Calculator.PrimeNumberDecompositionRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return PrimeNumberDecomposition(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncServerStreamingCall<global::Calculator.PrimeNumberDecompositionResponse> PrimeNumberDecomposition(global::Calculator.PrimeNumberDecompositionRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncServerStreamingCall(__Method_PrimeNumberDecomposition, null, options, request);
+      }
       /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
       protected override CalculatorServiceClient NewInstance(ClientBaseConfiguration configuration)
@@ -137,7 +165,8 @@ namespace Calculator {
     public static grpc::ServerServiceDefinition BindService(CalculatorServiceBase serviceImpl)
     {
       return grpc::ServerServiceDefinition.CreateBuilder()
-          .AddMethod(__Method_Calculator, serviceImpl.Calculator).Build();
+          .AddMethod(__Method_Calculator, serviceImpl.Calculator)
+          .AddMethod(__Method_PrimeNumberDecomposition, serviceImpl.PrimeNumberDecomposition).Build();
     }
 
     /// <summary>Register service method with a service binder with or without implementation. Useful when customizing the service binding logic.
@@ -148,6 +177,7 @@ namespace Calculator {
     public static void BindService(grpc::ServiceBinderBase serviceBinder, CalculatorServiceBase serviceImpl)
     {
       serviceBinder.AddMethod(__Method_Calculator, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Calculator.CalculatorSumRequest, global::Calculator.CalculatorSumResponse>(serviceImpl.Calculator));
+      serviceBinder.AddMethod(__Method_PrimeNumberDecomposition, serviceImpl == null ? null : new grpc::ServerStreamingServerMethod<global::Calculator.PrimeNumberDecompositionRequest, global::Calculator.PrimeNumberDecompositionResponse>(serviceImpl.PrimeNumberDecomposition));
     }
 
   }
