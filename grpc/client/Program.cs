@@ -31,6 +31,7 @@ namespace client
             _ = GreetEveryone(channel); // Bi Directional Streaming example 1
             _ = FindMax(channel); // Bi directional streamig example 2
             FindSqrt(channel); // gRPC Error Handling Example 1
+            GreetWithDeadline(channel); // Deadline example
             channel.ShutdownAsync().Wait();
             Console.ReadKey();
         }
@@ -174,6 +175,23 @@ namespace client
             {
                 Console.WriteLine("Error : " + e.Status.Detail);
             }
+        }
+        public static void GreetWithDeadline(Channel channel)
+        {
+            Console.WriteLine("##### Deadline Example #####");
+            var client = new GreetingService.GreetingServiceClient(channel);
+            var greeting = new Greeting() { FirstName = "Önder", LastName = "Genç" };
+            var request = new GreetingRequest() { Greeting = greeting };
+            try
+            {
+                var response = client.Greet(request, deadline: DateTime.UtcNow.AddMilliseconds(10));
+                Console.WriteLine(response.Result);
+            }
+            catch (RpcException e) when (e.StatusCode == StatusCode.DeadlineExceeded)
+            {
+                Console.WriteLine("Error : " + e.Status.Detail);
+            }
+            
         }
     }
 }
