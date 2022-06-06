@@ -6,6 +6,7 @@ using Calculator;
 using Dummy;
 using Greet;
 using Grpc.Core;
+using Sqrt;
 
 namespace client
 {
@@ -140,6 +141,8 @@ namespace client
             await responseReaderTask;
             */
 
+            /*
+             * Bi directional streamig
             var client = new CalculatorService.CalculatorServiceClient(channel);
             var stream = client.FindMaximum();
 
@@ -157,6 +160,21 @@ namespace client
 
             await stream.RequestStream.CompleteAsync();
             await responseReaderTask;
+            */
+
+            /* gRPC Error Example
+            var client = new SqrtService.SqrtServiceClient(channel);
+            int number = -1;
+            try
+            {
+                var response = client.sqrt(new SqrtRequest() { Number = number });
+                Console.WriteLine(response.SquraRoot);
+            }
+            catch (RpcException e)
+            {
+                Console.WriteLine("Error : " + e.Status.Detail);
+            }
+            */
 
             channel.ShutdownAsync().Wait();
             Console.ReadKey();
