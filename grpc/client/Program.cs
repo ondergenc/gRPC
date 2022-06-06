@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Calculator;
@@ -60,6 +61,8 @@ namespace client
             }            
             */
 
+            /*
+             * Server streaming PrimeNumbers
             var client = new CalculatorService.CalculatorServiceClient(channel);
 
             var request = new PrimeNumberDecompositionRequest()
@@ -74,6 +77,21 @@ namespace client
                 Console.WriteLine(response.ResponseStream.Current.Result);
                 await Task.Delay(200);
             }
+            */
+            var client = new GreetingService.GreetingServiceClient(channel);
+            var greeting = new Greeting() { FirstName = "Önder", LastName = "Genç" };
+            var request = new LongGreetRequest() { Greeting = greeting };
+            var stream = client.LongGreet();
+            foreach (int i in Enumerable.Range(1, 10))
+            {
+                await stream.RequestStream.WriteAsync(request);
+            }
+
+            await stream.RequestStream.CompleteAsync();
+            var response = await stream.ResponseAsync;
+
+            Console.WriteLine(response.Result);
+
             channel.ShutdownAsync().Wait();
             Console.ReadKey();
         }
