@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Calculator;
-using Dummy;
 using Greet;
 using Grpc.Core;
 using Sqrt;
@@ -24,33 +22,39 @@ namespace client
                     Console.WriteLine("The client connected successfully");
             });
 
-            /*
-             * Unary
-            //var client = new DummyService.DummyServiceClient(channel);
+            Greet(channel); // Unary example 1
+            Sum(channel); // Unary example 2
+            _ = GreetManyTimes(channel); // Server streaming example 1
+            _ = FindPrimeNumber(channel); // Server streaming example 2
+            _ = LongGreet(channel); // Client streaming example 1
+            _ = ComputeAvg(channel); // Client streaming example 2
+            _ = GreetEveryone(channel); // Bi Directional Streaming example 1
+            _ = FindMax(channel); // Bi directional streamig example 2
+            FindSqrt(channel); // gRPC Error Handling Example 1
+            channel.ShutdownAsync().Wait();
+            Console.ReadKey();
+        }
+        public static void Greet(Channel channel)
+        {
+            Console.WriteLine("##### Unary Example 1 #####");
             var client = new GreetingService.GreetingServiceClient(channel);
             var greeting = new Greeting() { FirstName = "Önder", LastName = "Genç" };
             var request = new GreetingRequest() { Greeting = greeting };
             var response = client.Greet(request);
             Console.WriteLine(response.Result);
-            */
-
-            /*
-             * Calculator sum
+        }
+        public static void Sum(Channel channel)
+        {
+            Console.WriteLine("##### Unary Example 2 #####");
             var client = new CalculatorService.CalculatorServiceClient(channel);
-
-            var request = new CalculatorSumRequest()
-            {
-                A = 3,
-                B = 10
-            };
-
+            var request = new CalculatorSumRequest() { A = 3, B = 10 };
             var response = client.Calculator(request);
             Console.WriteLine(response.Result);
             Console.WriteLine("The sum of {0} and {1} is {2}", request.A, request.B, response.Result);
-            */
-
-            /*
-             * Server streaming Greeting 
+        }
+        public static async Task GreetManyTimes(Channel channel)
+        {
+            Console.WriteLine("##### Server Streaming Example 1 #####");
             var client = new GreetingService.GreetingServiceClient(channel);
             var greeting = new Greeting() { FirstName = "Önder", LastName = "Genç" };
             var request = new GreetManyTimesRequest() { Greeting = greeting };
@@ -59,29 +63,23 @@ namespace client
             {
                 Console.WriteLine(response.ResponseStream.Current.Result);
                 await Task.Delay(200);
-            }            
-            */
-
-            /*
-             * Server streaming PrimeNumbers
+            }
+        }
+        public static async Task FindPrimeNumber(Channel channel)
+        {
+            Console.WriteLine("##### Server Streaming Example 2 #####");
             var client = new CalculatorService.CalculatorServiceClient(channel);
-
-            var request = new PrimeNumberDecompositionRequest()
-            {
-                Number = 120
-            };
-
+            var request = new PrimeNumberDecompositionRequest() { Number = 120 };
             var response = client.PrimeNumberDecomposition(request);
-
             while (await response.ResponseStream.MoveNext())
             {
                 Console.WriteLine(response.ResponseStream.Current.Result);
                 await Task.Delay(200);
             }
-            */
-
-            /*
-             * Client Streaming Greeting 
+        }
+        public static async Task LongGreet(Channel channel)
+        {
+            Console.WriteLine("##### Client Streaming Example 1 #####");
             var client = new GreetingService.GreetingServiceClient(channel);
             var greeting = new Greeting() { FirstName = "Önder", LastName = "Genç" };
             var request = new LongGreetRequest() { Greeting = greeting };
@@ -95,27 +93,28 @@ namespace client
             var response = await stream.ResponseAsync;
 
             Console.WriteLine(response.Result);
-            */
-
-            /*
-             * Client Streaming ComputeAverage
+        }
+        public static async Task ComputeAvg(Channel channel)
+        {
+            Console.WriteLine("##### Client Streaming Example 2 #####");
             var client = new CalculatorService.CalculatorServiceClient(channel);
             var stream = client.ComputeAverage();
-            foreach (var i in Enumerable.Range(1,4))
+            foreach (var i in Enumerable.Range(1, 4))
             {
                 await stream.RequestStream.WriteAsync(new ComputeAverageRequest() { Number = i });
             }
             await stream.RequestStream.CompleteAsync();
             var response = await stream.ResponseAsync;
             Console.WriteLine(response.Result);
-            */
-            /*
-             * Bi Directional Streaming
+        }
+        public static async Task GreetEveryone(Channel channel)
+        {
+            Console.WriteLine("##### Bi Directional Streaming Example 1 #####");
             var client = new GreetingService.GreetingServiceClient(channel);
             var stream = client.GreetEveryone();
             var responseReaderTask = Task.Run(async () =>
             {
-                while(await stream.ResponseStream.MoveNext())
+                while (await stream.ResponseStream.MoveNext())
                 {
                     Console.WriteLine("Received : " + stream.ResponseStream.Current.Result);
                 }
@@ -138,11 +137,11 @@ namespace client
             }
 
             await stream.RequestStream.CompleteAsync();
-            await responseReaderTask;
-            */
-
-            /*
-             * Bi directional streamig
+            //await responseReaderTask;
+        }
+        public static async Task FindMax(Channel channel)
+        {
+            Console.WriteLine("##### Bi Directional Streaming Example 2 #####");
             var client = new CalculatorService.CalculatorServiceClient(channel);
             var stream = client.FindMaximum();
 
@@ -159,10 +158,11 @@ namespace client
             }
 
             await stream.RequestStream.CompleteAsync();
-            await responseReaderTask;
-            */
-
-            /* gRPC Error Example
+            //await responseReaderTask;
+        }
+        public static void FindSqrt(Channel channel)
+        {
+            Console.WriteLine("##### Error Handling Example 1 #####");
             var client = new SqrtService.SqrtServiceClient(channel);
             int number = -1;
             try
@@ -174,10 +174,6 @@ namespace client
             {
                 Console.WriteLine("Error : " + e.Status.Detail);
             }
-            */
-
-            channel.ShutdownAsync().Wait();
-            Console.ReadKey();
         }
     }
 }

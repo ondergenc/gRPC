@@ -6,7 +6,7 @@ using static Sqrt.SqrtService;
 
 namespace server
 {
-	public class SqrtServiceImpl : SqrtServiceBase
+    public class SqrtServiceImpl : SqrtServiceBase
 	{
         public override async Task<SqrtResponse> sqrt(SqrtRequest request, ServerCallContext context)
         {
