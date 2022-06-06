@@ -12,19 +12,19 @@ namespace client
     {
         const string target = "127.0.0.1:50052";
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             Channel channel = new Channel(target, ChannelCredentials.Insecure);
 
-            channel.ConnectAsync().ContinueWith((task) =>
+            await channel.ConnectAsync().ContinueWith((task) =>
             {
                 if (task.Status == TaskStatus.RanToCompletion)
                     Console.WriteLine("The client connected successfully");
             });
 
-            //var client = new DummyService.DummyServiceClient(channel);
-
             /*
+             * Unary
+            //var client = new DummyService.DummyServiceClient(channel);
             var client = new GreetingService.GreetingServiceClient(channel);
             var greeting = new Greeting() { FirstName = "Önder", LastName = "Genç" };
             var request = new GreetingRequest() { Greeting = greeting };
@@ -32,6 +32,8 @@ namespace client
             Console.WriteLine(response.Result);
             */
 
+            /*
+             * Calculator sum
             var client = new CalculatorService.CalculatorServiceClient(channel);
 
             var request = new CalculatorSumRequest()
@@ -41,9 +43,20 @@ namespace client
             };
 
             var response = client.Calculator(request);
-
             Console.WriteLine(response.Result);
             Console.WriteLine("The sum of {0} and {1} is {2}", request.A, request.B, response.Result);
+            */
+
+            var client = new GreetingService.GreetingServiceClient(channel);
+            var greeting = new Greeting() { FirstName = "Önder", LastName = "Genç" };
+            var request = new GreetManyTimesRequest() { Greeting = greeting };
+            var response = client.GreetManyTimes(request);
+            while (await response.ResponseStream.MoveNext())
+            {
+                Console.WriteLine(response.ResponseStream.Current.Result);
+                await Task.Delay(200);
+            }            
+            
             channel.ShutdownAsync().Wait();
             Console.ReadKey();
         }
