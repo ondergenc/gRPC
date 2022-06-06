@@ -108,7 +108,8 @@ namespace client
             var response = await stream.ResponseAsync;
             Console.WriteLine(response.Result);
             */
-
+            /*
+             * Bi Directional Streaming
             var client = new GreetingService.GreetingServiceClient(channel);
             var stream = client.GreetEveryone();
             var responseReaderTask = Task.Run(async () =>
@@ -133,6 +134,25 @@ namespace client
                 {
                     Greeting = greeting
                 });
+            }
+
+            await stream.RequestStream.CompleteAsync();
+            await responseReaderTask;
+            */
+
+            var client = new CalculatorService.CalculatorServiceClient(channel);
+            var stream = client.FindMaximum();
+
+            var responseReaderTask = Task.Run(async () =>
+            {
+                while (await stream.ResponseStream.MoveNext())
+                    Console.WriteLine(stream.ResponseStream.Current.Max);
+            });
+
+            int[] numbers = { 1, 5, 3, 6, 2, 20 };
+            foreach (var number in numbers)
+            {
+                await stream.RequestStream.WriteAsync(new FindMaxRequest() { Number = number });
             }
 
             await stream.RequestStream.CompleteAsync();
