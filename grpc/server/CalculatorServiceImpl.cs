@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Calculator;
 using Grpc.Core;
+using Grpc.Core.Utils;
 using static Calculator.CalculatorService;
 
 namespace server
@@ -36,6 +37,19 @@ namespace server
                 else
                     divisor++;
             }
+        }
+
+        public override async Task<ComputeAverageResponse> ComputeAverage(IAsyncStreamReader<ComputeAverageRequest> requestStream, ServerCallContext context)
+        {
+            double sum = 0;
+            int count = 0;
+            while(await requestStream.MoveNext())
+            {
+                sum += requestStream.Current.Number;
+                count++;
+            }
+
+            return await Task.FromResult(new ComputeAverageResponse() { Result = sum / count });
         }
     }
 }

@@ -78,6 +78,9 @@ namespace client
                 await Task.Delay(200);
             }
             */
+
+            /*
+             * Client Streaming Greeting 
             var client = new GreetingService.GreetingServiceClient(channel);
             var greeting = new Greeting() { FirstName = "Önder", LastName = "Genç" };
             var request = new LongGreetRequest() { Greeting = greeting };
@@ -90,6 +93,17 @@ namespace client
             await stream.RequestStream.CompleteAsync();
             var response = await stream.ResponseAsync;
 
+            Console.WriteLine(response.Result);
+            */
+
+            var client = new CalculatorService.CalculatorServiceClient(channel);
+            var stream = client.ComputeAverage();
+            foreach (var i in Enumerable.Range(1,4))
+            {
+                await stream.RequestStream.WriteAsync(new ComputeAverageRequest() { Number = i });
+            }
+            await stream.RequestStream.CompleteAsync();
+            var response = await stream.ResponseAsync;
             Console.WriteLine(response.Result);
 
             channel.ShutdownAsync().Wait();
