@@ -96,6 +96,8 @@ namespace client
             Console.WriteLine(response.Result);
             */
 
+            /*
+             * Client Streaming ComputeAverage
             var client = new CalculatorService.CalculatorServiceClient(channel);
             var stream = client.ComputeAverage();
             foreach (var i in Enumerable.Range(1,4))
@@ -105,6 +107,36 @@ namespace client
             await stream.RequestStream.CompleteAsync();
             var response = await stream.ResponseAsync;
             Console.WriteLine(response.Result);
+            */
+
+            var client = new GreetingService.GreetingServiceClient(channel);
+            var stream = client.GreetEveryone();
+            var responseReaderTask = Task.Run(async () =>
+            {
+                while(await stream.ResponseStream.MoveNext())
+                {
+                    Console.WriteLine("Received : " + stream.ResponseStream.Current.Result);
+                }
+            });
+
+            Greeting[] greetings =
+            {
+                new Greeting() { FirstName = "Önder", LastName = "Genç" },
+                new Greeting() { FirstName = "Ali", LastName = "Veli" },
+                new Greeting() { FirstName = "Ahmet", LastName = "Mehmet" }
+            };
+
+            foreach (var greeting in greetings)
+            {
+                Console.WriteLine("Sending : " + greeting.ToString());
+                await stream.RequestStream.WriteAsync(new GreetEveryoneRequest()
+                {
+                    Greeting = greeting
+                });
+            }
+
+            await stream.RequestStream.CompleteAsync();
+            await responseReaderTask;
 
             channel.ShutdownAsync().Wait();
             Console.ReadKey();
